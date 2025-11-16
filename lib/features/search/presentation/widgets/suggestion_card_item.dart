@@ -1,5 +1,4 @@
-// TODO: UNCOMMENT WHEN ADDING RETURNING USER SUGGESTION CARDS
-/*
+// suggestion_card_item.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,22 +14,21 @@ class SuggestionCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final baseSize = MediaQuery.of(context).size.shortestSide * 0.01;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(baseSize * 2),
+        padding: EdgeInsets.all(screenWidth * 0.04),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          borderRadius: BorderRadius.circular(baseSize * 3),
-          border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
-              blurRadius: baseSize * 2,
+              blurRadius: 8,
               offset: const Offset(0, 4),
             ),
           ],
@@ -39,30 +37,30 @@ class SuggestionCardItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(baseSize * 2),
+              borderRadius: BorderRadius.circular(8),
               child: Image.asset(
                 "assets/images/discovery.png",
-                width: baseSize * 20,
-                height: baseSize * 20,
+                width: screenWidth * 0.15,
+                height: screenWidth * 0.15,
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: baseSize * 2),
+            SizedBox(height: screenHeight * 0.015),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   title,
                   style: GoogleFonts.poppins(
-                    fontSize: baseSize * 3.5,
-                    color: isDark ? Colors.white : Colors.black,
+                    fontSize: 14,
+                    color: Colors.black,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 Icon(
                   Icons.north_east,
-                  size: baseSize * 4,
-                  color: isDark ? Colors.white : Colors.black,
+                  size: 16,
+                  color: Colors.black,
                 ),
               ],
             ),
@@ -72,4 +70,3 @@ class SuggestionCardItem extends StatelessWidget {
     );
   }
 }
-*/

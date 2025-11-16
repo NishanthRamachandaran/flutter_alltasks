@@ -25,17 +25,17 @@ class NewUserSearchResults extends StatelessWidget {
     }
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    //  crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Search Results",
-          style: GoogleFonts.poppins(
-            fontSize: screenWidth * 0.042,
-            fontWeight: FontWeight.w600,
-            color: DefaultColors.black,
-          ),
-        ),
-        SizedBox(height: screenWidth * 0.02),
+        // Text(
+        //   "Search Results",
+        //   style: GoogleFonts.poppins(
+        //     fontSize: screenWidth * 0.042,
+        //     fontWeight: FontWeight.w600,
+        //     color: DefaultColors.black,
+        //   ),
+        // ),
+      //  SizedBox(height: screenWidth * 0.02),
         Expanded(
           child: ListView.builder(
             itemCount: searchResults.length,
