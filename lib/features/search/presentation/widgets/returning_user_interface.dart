@@ -1,85 +1,81 @@
-// TODO: UNCOMMENT WHEN ADDING RETURNING USER INTERFACE
-/*
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'search_option_item.dart';
-import 'suggestion_card_item.dart';
+// // returning_user_interface.dart
+// import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'search_option_item.dart';
+// import 'suggestion_card_item.dart';
 
-class ReturningUserInterface extends StatelessWidget {
-  final TextEditingController searchController;
+// class ReturningUserInterface extends StatelessWidget {
+//   final TextEditingController searchController;
 
-  const ReturningUserInterface({
-    super.key,
-    required this.searchController,
-  });
+//   const ReturningUserInterface({
+//     super.key,
+//     required this.searchController,
+//   });
 
-  void _onSearchChanged(String query) {
-    searchController.text = query;
-  }
+//   void _onSearchChanged(String query) {
+//     searchController.text = query;
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final baseSize = MediaQuery.of(context).size.shortestSide * 0.01;
+//   @override
+//   Widget build(BuildContext context) {
+//     final screenWidth = MediaQuery.of(context).size.width;
+//     final screenHeight = MediaQuery.of(context).size.height;
     
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Search for financial services",
-            style: GoogleFonts.poppins(
-              fontSize: baseSize * 4,
-              fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-          ),
-          SizedBox(height: baseSize * 2),
+//     return SingleChildScrollView(
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             "Search for",
+//             style: GoogleFonts.poppins(
+//               fontSize: 16,
+//               fontWeight: FontWeight.w600,
+//               color: Colors.black,
+//             ),
+//           ),
+//           SizedBox(height: screenHeight * 0.02),
 
-          Column(
-            children: [
-              "Home Finance", "Instant Finance", "Car Finance", "Personal Finance",
-              "Business Loans", "Investment Plans", "Loan Services", "Wealth Management"
-            ].map((option) {
-              return SearchOptionItem(
-                option: option,
-                onTap: () => _onSearchChanged(option),
-              );
-            }).toList(),
-          ),
-          SizedBox(height: baseSize * 3),
+//           Column(
+//             children: [
+//               "Home Finance", "Instant Finance", "Advance Salary", 
+//             ].map((option) {
+//               return SearchOptionItem(
+//                 option: option,
+//                 onTap: () => _onSearchChanged(option),
+//               );
+//             }).toList(),
+//           ),
+//           SizedBox(height: screenHeight * 0.03),
 
-          Text(
-            "Suggestions",
-            style: GoogleFonts.poppins(
-              fontSize: baseSize * 4,
-              fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-          ),
-          SizedBox(height: baseSize * 2),
+//           Text(
+//             "Suggestions",
+//             style: GoogleFonts.poppins(
+//               fontSize: 16,
+//               fontWeight: FontWeight.w600,
+//               color: Colors.black,
+//             ),
+//           ),
+//           SizedBox(height: screenHeight * 0.02),
 
-          Row(
-            children: [
-              Expanded(
-                child: SuggestionCardItem(
-                  title: "Mobile Recharge",
-                  onTap: () => _onSearchChanged("Mobile Recharge"),
-                ),
-              ),
-              SizedBox(width: baseSize * 3),
-              Expanded(
-                child: SuggestionCardItem(
-                  title: "Offers",
-                  onTap: () => _onSearchChanged("Offers"),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-*/
+//           Row(
+//             children: [
+//               Expanded(
+//                 child: SuggestionCardItem(
+//                   title: "Mobile Recharge",
+//                   onTap: () => _onSearchChanged("Mobile Recharge"),
+//                 ),
+//               ),
+//               SizedBox(width: screenWidth * 0.03),
+//               Expanded(
+//                 child: SuggestionCardItem(
+//                   title: "Offers",
+//                   onTap: () => _onSearchChanged("Offers"),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

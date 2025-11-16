@@ -1,5 +1,4 @@
-// TODO: UNCOMMENT WHEN ADDING RETURNING USER OPTION ITEMS
-/*
+// search_option_item.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,23 +14,22 @@ class SearchOptionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final baseSize = MediaQuery.of(context).size.shortestSide * 0.01;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     
     return Padding(
-      padding: EdgeInsets.only(bottom: baseSize * 2),
+      padding: EdgeInsets.only(bottom: screenHeight * 0.015),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           padding: EdgeInsets.symmetric(
-            horizontal: baseSize * 4,
-            vertical: baseSize * 3,
+            horizontal: screenWidth * 0.04,
+            vertical: screenHeight * 0.02,
           ),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            borderRadius: BorderRadius.circular(baseSize * 3),
-            border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,15 +37,15 @@ class SearchOptionItem extends StatelessWidget {
               Text(
                 option,
                 style: GoogleFonts.poppins(
-                  fontSize: baseSize * 3.5,
-                  color: isDark ? Colors.white : Colors.black,
+                  fontSize: 14,
+                  color: Colors.black,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Icon(
                 Icons.north_east,
-                size: baseSize * 4,
-                color: isDark ? Colors.white : Colors.black,
+                size: 18,
+                color: Colors.black,
               ),
             ],
           ),
@@ -56,4 +54,3 @@ class SearchOptionItem extends StatelessWidget {
     );
   }
 }
-*/

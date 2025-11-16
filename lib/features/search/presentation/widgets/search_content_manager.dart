@@ -12,6 +12,7 @@ class SearchContentManager extends ConsumerWidget {
   final double screenWidth;
   final TextEditingController searchController;
   final AsyncValue<List<String>> searchResults;
+  // final VoidCallback onReturningUserTap; //  - Returning user feature
 
   const SearchContentManager({
     super.key,
@@ -19,6 +20,7 @@ class SearchContentManager extends ConsumerWidget {
     required this.screenWidth,
     required this.searchController,
     required this.searchResults,
+    // required this.onReturningUserTap, // - Returning user feature
   });
 
   @override
@@ -42,7 +44,10 @@ class SearchContentManager extends ConsumerWidget {
         ),
       );
     } else {
-      return NewUserInterface(searchController: searchController);
+      return NewUserInterface(
+        searchController: searchController,
+        // onReturningUserTap: onReturningUserTap, //  - Returning user feature
+      );
     }
   }
 }

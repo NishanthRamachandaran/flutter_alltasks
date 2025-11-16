@@ -1,5 +1,3 @@
-
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +6,7 @@ import '../../../../core/constants/app_colors/default_colors.dart';
 import '../controller/search_provider.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/search_content_manager.dart';
+// import '../widgets/returning_user_screen.dart';
 
 @RoutePage()
 class UnifiedSearchScreen extends ConsumerStatefulWidget {
@@ -43,6 +42,15 @@ class _UnifiedSearchScreenState extends ConsumerState<UnifiedSearchScreen> {
     Navigator.of(context).pop();
   }
 
+  //  - Returning user navigation
+  // void _navigateToReturningUser() {
+  //   Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (context) => const ReturningUserScreen(),
+  //     ),
+  //   );
+  // }
+
   bool get _isSearching => _searchController.text.isNotEmpty;
 
   @override
@@ -70,6 +78,7 @@ class _UnifiedSearchScreenState extends ConsumerState<UnifiedSearchScreen> {
                 screenWidth: screenWidth,
                 searchController: _searchController,
                 searchResults: searchResults,
+                // onReturningUserTap: _navigateToReturningUser, // - Returning user feature
               ),
             ),
           ],
