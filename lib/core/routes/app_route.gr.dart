@@ -10,20 +10,21 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i2;
-import 'package:tasks/features/home/presentation/pages/home_screen.dart' as _i1;
+import 'package:tasks/features/offers/presentation/widgets/offer_screen.dart'
+    as _i1;
 
 /// generated route for
-/// [_i1.HomeScreen]
-class HomeRoute extends _i2.PageRouteInfo<void> {
-  const HomeRoute({List<_i2.PageRouteInfo>? children})
-    : super(HomeRoute.name, initialChildren: children);
+/// [_i1.OffersScreen]
+class OffersRoute extends _i2.PageRouteInfo<void> {
+  const OffersRoute({List<_i2.PageRouteInfo>? children})
+    : super(OffersRoute.name, initialChildren: children);
 
-  static const String name = 'HomeRoute';
+  static const String name = 'OffersRoute';
 
   static _i2.PageInfo page = _i2.PageInfo(
     name,
     builder: (data) {
-      return const _i1.HomeScreen();
+      return const _i1.OffersScreen();
     },
   );
 }
