@@ -5,7 +5,7 @@ import 'package:tasks/features/offers/presentation/conroller/offer_provider.dart
 
 import '../widgets/custom_offer_dialog.dart';
 
-@RoutePage() // 👈 This is where it must be
+@RoutePage() 
 class OffersScreen extends ConsumerStatefulWidget {
   const OffersScreen({super.key});
 
