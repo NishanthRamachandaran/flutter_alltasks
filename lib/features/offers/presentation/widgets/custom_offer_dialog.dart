@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,287 +39,154 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return Dialog(
-      backgroundColor: DefaultColors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      child: _buildDialogContent(context),
+    return SafeArea(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+        child: Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          backgroundColor: Colors.transparent,
+          child: SingleChildScrollView(child: _buildContent(context)),
+        ),
+      ),
     );
   }
 
-  Widget _buildDialogContent(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    
+  Widget _buildContent(BuildContext context) {
     return Container(
-      width: double.infinity,
-      decoration: _buildDialogDecoration(),
-      child:  Padding(
-        padding: EdgeInsets.all(24),
+      decoration: _style(),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTitle(context),
-            SizedBox(height: 16),
-            _buildContentRow(context),
-            SizedBox(height: 20),
-            if (widget.showDontShowAgain) ..._buildDontShowAgainSection(context),
-            _buildPrimaryButton(context),
-            SizedBox(height: 12),
-            _buildSecondaryButton(context),
+            _title(),
+            const SizedBox(height: 16),
+            _body(context),
+            const SizedBox(height: 20),
+            if (widget.showDontShowAgain) ..._dontShowAgainSection(),
+            _primaryButton(),
+            const SizedBox(height: 12),
+            _secondaryButton(),
           ],
         ),
       ),
     );
   }
 
-  BoxDecoration _buildDialogDecoration() {
-    return BoxDecoration(
-      color: DefaultColors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: DefaultColors.black.withOpacity(0.1),
-          blurRadius: 20,
-          offset: const Offset(0, 10),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTitle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(
-          widget.title,
-          style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: DefaultColors.blue9D,
-          ),
-          textAlign: TextAlign.center,
-          maxLines: 1,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContentRow(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildImageStack(context),
-        SizedBox(width: screenWidth * 0.04),
-        _buildDescription(context),
-      ],
-    );
-  }
-
-  Widget _buildImageStack(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    
-    return SizedBox(
-      width: screenWidth * 0.25,
-      height: screenHeight * 0.1125,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            right: 0,
-            top: screenHeight * 0.03125,
-            child: Transform.rotate(
-              angle: -0.2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  widget.imagePath,
-                  width: screenWidth * 0.225,
-                  height: screenHeight * 0.06875,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ),
-          
-          Positioned(
-            left: screenWidth * 0.0125,
-            top: screenHeight * 0.05,
-            child: Transform.rotate(
-              angle: 0,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  'assets/images/visa.png',
-                  width: screenWidth * 0.225,
-                  height: screenHeight * 0.0625,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ),
+  BoxDecoration _style() => BoxDecoration(
+        color: DefaultColors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.12),
+              blurRadius: 25,
+              offset: const Offset(0, 8))
         ],
-      ),
-    );
-  }
+      );
 
-  Widget _buildDescription(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: RichText(
-          textAlign: TextAlign.left,
-          text: TextSpan(
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: DefaultColors.black,
-              height: 1.5,
-            ),
-            children: _parseDescription(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<TextSpan> _parseDescription() {
-    final words = widget.description.split(' ');
-    List<TextSpan> spans = [];
-
-    for (int i = 0; i < words.length; i++) {
-      String word = words[i];
-      bool isBold = word.contains(RegExp(r'\d')) ||
-          word.toLowerCase().contains('maximum') ||
-          word.toLowerCase().contains('limit') ||
-          word.toLowerCase().contains('upto');
-
-      spans.add(
-        TextSpan(
-          text: word + (i < words.length - 1 ? ' ' : ''),
-          style: GoogleFonts.poppins(
-            fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
-            color: DefaultColors.black,
-          ),
+  Widget _title() => Text(
+        widget.title,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: DefaultColors.blue9D,
         ),
       );
-    }
-    return spans;
+
+  Widget _body(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    return Row(
+      children: [
+        SizedBox(
+          width: w * 0.26,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(widget.imagePath, fit: BoxFit.contain),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(child: _desc()),
+      ],
+    );
   }
 
-  List<Widget> _buildDontShowAgainSection(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: screenWidth * 0.05,
-            height: screenWidth * 0.05,
-            child: Checkbox(
+  Widget _desc() => RichText(
+        text: TextSpan(
+          style: GoogleFonts.poppins(
+              fontSize: 14, color: DefaultColors.black, height: 1.5),
+          children: _formatDesc(),
+        ),
+      );
+
+  List<TextSpan> _formatDesc() => widget.description.split(" ").map((word) {
+        final bold = word.contains(RegExp(r'\d')) ||
+            word.toLowerCase().contains("maximum") ||
+            word.toLowerCase().contains("limit") ||
+            word.toLowerCase().contains("upto");
+        return TextSpan(
+          text: "$word ",
+          style: TextStyle(
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w400),
+        );
+      }).toList();
+
+  List<Widget> _dontShowAgainSection() => [
+        Row(
+          children: [
+            Checkbox(
               value: _dontShowAgain,
-              onChanged: (value) {
-                setState(() {
-                  _dontShowAgain = value ?? false;
-                });
-                if (_dontShowAgain) {
-                  ref.read(offerVisibilityProvider.notifier).state = {
-                    ...ref.read(offerVisibilityProvider),
-                    widget.offerId: true,
-                  };
-                } else {
-                  ref.read(offerVisibilityProvider.notifier).state = {
-                    ...ref.read(offerVisibilityProvider),
-                    widget.offerId: false,
-                  };
-                }
+              onChanged: (v) {
+                setState(() => _dontShowAgain = v!);
+                ref.read(offerVisibilityProvider.notifier).state = {
+                  ...ref.read(offerVisibilityProvider),
+                  widget.offerId: v!,
+                };
               },
               activeColor: DefaultColors.blue9D,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
             ),
-          ),
-          SizedBox(width: screenWidth * 0.02),
-          Flexible(
-            child: Text(
-              "Don't Show this offer again!",
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: DefaultColors.gray71,
-              ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text("Don't show this offer again!",
+                  style: GoogleFonts.poppins(
+                      fontSize: 12, color: DefaultColors.gray71)),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 20),
-    ];
-  }
-
-  Widget _buildPrimaryButton(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: widget.onPrimaryButtonPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: DefaultColors.blue9D,
-          foregroundColor: DefaultColors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          elevation: 0,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              widget.primaryButtonText,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(width: screenWidth * 0.02),
-            Icon(Icons.north_east, size: 18),
           ],
         ),
-      ),
-    );
-  }
+        const SizedBox(height: 18),
+      ];
 
-  Widget _buildSecondaryButton(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: widget.onSecondaryButtonPressed,
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
+  Widget _primaryButton() => SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: widget.onPrimaryButtonPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: DefaultColors.blue9D,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            padding: const EdgeInsets.symmetric(vertical: 16),
           ),
-          side: BorderSide(color: DefaultColors.blue9D, width: 1.5),
+          child: Text(widget.primaryButtonText,
+              style: GoogleFonts.poppins(
+                  fontSize: 16, fontWeight: FontWeight.w600)),
         ),
-        child: Text(
-          widget.secondaryButtonText,
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: DefaultColors.blue9D,
+      );
+
+  Widget _secondaryButton() => SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: widget.onSecondaryButtonPressed,
+          style: OutlinedButton.styleFrom(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            side: BorderSide(color: DefaultColors.blue9D),
+            padding: const EdgeInsets.symmetric(vertical: 16),
           ),
+          child: Text(widget.secondaryButtonText,
+              style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: DefaultColors.blue9D)),
         ),
-      ),
-    );
-  }
+      );
 }

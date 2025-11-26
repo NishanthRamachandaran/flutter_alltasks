@@ -30,12 +30,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _offerShown = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showCreditCardOffer();
-    });
-  }
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     _showCreditCardOffer();
+  //   });
+  // }
 
   void _showCreditCardOffer() {
     if (_offerShown) return; // Prevent multiple calls

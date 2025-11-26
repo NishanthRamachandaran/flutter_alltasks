@@ -1,4 +1,3 @@
-// lib/features/offers/presentation/providers/offer_providers.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

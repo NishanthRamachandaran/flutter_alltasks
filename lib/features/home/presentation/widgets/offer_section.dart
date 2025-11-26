@@ -32,7 +32,7 @@ class OffersSection extends ConsumerWidget {
         const SizedBox(height: 12),
 
         SizedBox(
-          height: screenHeight * 0.22,
+          height: screenHeight * 0.18,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(left: 4),
@@ -75,103 +75,106 @@ class OffersSection extends ConsumerWidget {
   Widget _buildOfferCard(BuildContext context, double screenWidth, double screenHeight) {
     return Container(
       width: screenWidth * 0.85,
-      height: screenHeight * 0.22,
+      height: screenHeight * 0.1,
       margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: DefaultColors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "A new dimension of benefits and\nRewards",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: DefaultColors.black,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "With Dukhan Bank VIA Infinite Credit Card.",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w400,
-                    color: DefaultColors.black.withOpacity(0.7),
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: DefaultColors.blueLightBase,
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Learn More",
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.north_east,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+      decoration: BoxDecoration(
+        color: DefaultColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: DefaultColors.blueLightBase.withOpacity(0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: Offset(0, 2),
           ),
-
-          Positioned(
-            bottom: screenHeight * 0.055,
-            left: screenWidth * 0.05,
-            child: ClipRect(
-              child: Align(
-                alignment: Alignment.topLeft,
-                heightFactor: 0.6,
-                child: SizedBox(
-                  width: screenWidth * 0.4,
-                  height: screenHeight * 0.12,
-                  child: Image.asset(
-                    'assets/images/black.png',
-                    fit: BoxFit.contain,
-                    alignment: Alignment.topLeft,
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          children: [
+            // Image positioned at bottom left - showing top half, hiding bottom half
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: ClipRect(
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  heightFactor: 0.55,
+                  child: SizedBox(
+                    width: screenWidth * 0.38,
+                    child: Image.asset(
+                      "assets/images/black.png",
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+
+            // Content
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "A new dimension of benefits and\nRewards",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: DefaultColors.black,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "With Dukhan Bank VIA Infinite Credit Card.",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: DefaultColors.black.withOpacity(0.6),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1E5BA8), // Dark blue color
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text(
+                            "Learn More",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 6),
+                          Icon(Icons.north_east, size: 16, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -67,72 +67,80 @@ class WealthAdvisorySection extends StatelessWidget {
     );
   }
 
-  Widget _buildAdvisoryCard(BuildContext context,
-      {required IconData icon, required String title, required double screenWidth, required double screenHeight}) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: DefaultColors.white,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: screenHeight * 0.08,
-              decoration: BoxDecoration(
-                color: DefaultColors.grayF4,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(14),
-                  topRight: Radius.circular(14),
-                ),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.only(left: 16),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Icon(
-                    Icons.work_outline,
-                    color: DefaultColors.blueLightBase,
-                    size: 32,
-                  ),
-                ),
+ Widget _buildAdvisoryCard(
+  BuildContext context, {
+  required IconData icon,
+  required String title,
+  required double screenWidth,
+  required double screenHeight,
+}) {
+  return Expanded(
+    child: Container(
+      decoration: BoxDecoration(
+        color: DefaultColors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // -------- TOP ICON BOX --------
+          Container(
+            height: screenHeight * 0.08,
+            decoration: BoxDecoration(
+              color: DefaultColors.grayF4,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(14),
+                topRight: Radius.circular(14),
               ),
             ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(
+                  icon,           // <-- FIXED: now dynamic
+                  color: DefaultColors.blueLightBase,
+                  size: 32,
+                ),
+              ),
+            ),
+          ),
 
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Portfolio\nManagement",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: DefaultColors.black,
-                      ),
+          // -------- BOTTOM TITLE + ARROW --------
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    title,        // <-- FIXED: now dynamic
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: DefaultColors.black,
                     ),
                   ),
-                  Icon(
-                    Icons.north_east,
-                    color: DefaultColors.black,
-                    size: 16,
-                  ),
-                ],
-              ),
+                ),
+                const Icon(
+                  Icons.north_east,
+                  color: DefaultColors.black,
+                  size: 16,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
