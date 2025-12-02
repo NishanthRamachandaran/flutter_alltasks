@@ -6,7 +6,7 @@ final creditCardOfferProvider = StateProvider<Map<String, dynamic>>((ref) => {
   'id': 'dfc_credit_card_2024',
   'title': 'Get your DFC Credit Card today!',
   'description': 'You are now eligible for an Instant Credit card with maximum limit upto 5,000.00 QAR.',
-  'imagePath': 'assets/images/credit.png',
+  'imagePath': 'assets/images/visa.png',
   'primaryButtonText': 'Apply now',
   'secondaryButtonText': 'Close',
   'showDontShowAgain': true,

@@ -33,133 +33,137 @@ class CustomOfferDialog extends ConsumerStatefulWidget {
   ConsumerState<CustomOfferDialog> createState() => _CustomOfferDialogState();
 }
 
-class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog> {
+class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
+    with SingleTickerProviderStateMixin {
   bool _dontShowAgain = false;
+  bool _isCollapsing = false;
+
+  late AnimationController _controller;
+  late Animation<double> _scaleAnim;
+  late Animation<double> _fadeAnim;
+  late Animation<Offset> _moveAnim;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    _scaleAnim = Tween<double>(
+      begin: 1,
+      end: 0.03,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _fadeAnim = Tween<double>(
+      begin: 1,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _moveAnim = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(0, 1.1),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
+    final w = MediaQuery.of(context).size.width;
+    final h = MediaQuery.of(context).size.height;
+
     return Dialog(
       backgroundColor: DefaultColors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      child: _buildDialogContent(context),
+      insetPadding: EdgeInsets.symmetric(horizontal: w * 0.045),
+      child: ClipRect(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            AnimatedBuilder(
+              animation: _controller,
+              builder: (_, __) {
+                return SlideTransition(
+                  position: _moveAnim,
+                  child: ScaleTransition(
+                    scale: _scaleAnim,
+                    child: FadeTransition(
+                      opacity: _fadeAnim,
+                      child: _mainCard(context, w, h),
+                    ),
+                  ),
+                );
+              },
+            ),
+            _buildCloseButton(context, w, h),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildDialogContent(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    
+  Widget _mainCard(BuildContext context, double w, double h) {
     return Container(
       width: double.infinity,
-      decoration: _buildDialogDecoration(),
-      child:  Padding(
-        padding: EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: DefaultColors.white,
+        borderRadius: BorderRadius.circular(w * 0.07),
+        boxShadow: [
+          BoxShadow(
+            color: DefaultColors.black.withOpacity(0.10),
+            blurRadius: w * 0.05,
+            offset: Offset(0, h * 0.01),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(w * 0.035, h * 0.015, w * 0.035, h * 0.03),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTitle(context),
-            SizedBox(height: 16),
-            _buildContentRow(context),
-            SizedBox(height: 20),
-            if (widget.showDontShowAgain) ..._buildDontShowAgainSection(context),
-            _buildPrimaryButton(context),
-            SizedBox(height: 12),
-            _buildSecondaryButton(context),
+            _buildBlueContent(context, w, h),
+            SizedBox(height: h * 0.015),
+            SizedBox(height: h * 0.03),
           ],
         ),
       ),
     );
   }
 
-  BoxDecoration _buildDialogDecoration() {
-    return BoxDecoration(
-      color: DefaultColors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: DefaultColors.black.withOpacity(0.1),
-          blurRadius: 20,
-          offset: const Offset(0, 10),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTitle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(
-          widget.title,
-          style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: DefaultColors.blue9D,
-          ),
-          textAlign: TextAlign.center,
-          maxLines: 1,
-        ),
+  Widget _buildBlueContent(BuildContext context, double w, double h) {
+    return Container(
+      decoration: BoxDecoration(
+        color: DefaultColors.skyBlue,
+        borderRadius: BorderRadius.circular(w * 0.05),
       ),
-    );
-  }
-
-  Widget _buildContentRow(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildImageStack(context),
-        SizedBox(width: screenWidth * 0.04),
-        _buildDescription(context),
-      ],
-    );
-  }
-
-  Widget _buildImageStack(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    
-    return SizedBox(
-      width: screenWidth * 0.25,
-      height: screenHeight * 0.1125,
-      child: Stack(
-        clipBehavior: Clip.none,
+      child: Column(
         children: [
-          Positioned(
-            right: 0,
-            top: screenHeight * 0.03125,
-            child: Transform.rotate(
-              angle: -0.2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  widget.imagePath,
-                  width: screenWidth * 0.225,
-                  height: screenHeight * 0.06875,
-                  fit: BoxFit.contain,
-                ),
-              ),
+          _buildImageStack(context, w, h),
+          SizedBox(height: h * 0.04),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              w * 0.06,
+              h * 0.02,
+              w * 0.06,
+              h * 0.02,
             ),
-          ),
-          
-          Positioned(
-            left: screenWidth * 0.0125,
-            top: screenHeight * 0.05,
-            child: Transform.rotate(
-              angle: 0,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  'assets/images/visa.png',
-                  width: screenWidth * 0.225,
-                  height: screenHeight * 0.0625,
-                  fit: BoxFit.contain,
-                ),
-              ),
+            child: Column(
+              children: [
+                _buildTitle(context, w),
+                SizedBox(height: h * 0.02),
+                _buildDescription(context, w),
+                SizedBox(height: h * 0.02),
+                if (widget.showDontShowAgain)
+                  _buildDontShowAgainSection(context),
+                SizedBox(height: h * 0.015),
+                _buildPrimaryButton(context, w, h),
+              ],
             ),
           ),
         ],
@@ -167,156 +171,181 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog> {
     );
   }
 
-  Widget _buildDescription(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: RichText(
-          textAlign: TextAlign.left,
-          text: TextSpan(
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: DefaultColors.black,
-              height: 1.5,
+  Widget _buildImageStack(BuildContext context, double w, double h) {
+    final cardW = w * 0.35;
+    final cardH = w * 0.22;
+    final hide = cardH * 0.20;
+
+    return ClipRect(
+      child: SizedBox(
+        width: cardW + w * 0.04,
+        height: cardH - hide + h * 0.01,
+        child: Stack(
+          children: [
+            Positioned(
+              top: -hide,
+              right: 0,
+              child: _img("assets/images/credit.png", cardW, cardH),
             ),
-            children: _parseDescription(),
-          ),
+            Positioned(
+              top: -hide + h * 0.01,
+              left: 0,
+              child: _img(widget.imagePath, cardW, cardH),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  List<TextSpan> _parseDescription() {
-    final words = widget.description.split(' ');
-    List<TextSpan> spans = [];
+  Widget _img(String p, double w, double h) => ClipRRect(
+    borderRadius: BorderRadius.circular(w * 0.07),
+    child: Image.asset(p, width: w, height: h, fit: BoxFit.cover),
+  );
 
-    for (int i = 0; i < words.length; i++) {
-      String word = words[i];
-      bool isBold = word.contains(RegExp(r'\d')) ||
-          word.toLowerCase().contains('maximum') ||
-          word.toLowerCase().contains('limit') ||
-          word.toLowerCase().contains('upto');
+  Widget _buildTitle(BuildContext context, double w) => Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      widget.title,
+      style: GoogleFonts.poppins(
+        fontSize: w * 0.04,
+        fontWeight: FontWeight.w700,
+        color: DefaultColors.blue9D,
+      ),
+    ),
+  );
 
-      spans.add(
-        TextSpan(
-          text: word + (i < words.length - 1 ? ' ' : ''),
+  Widget _buildDescription(BuildContext context, double w) => RichText(
+    text: TextSpan(
+      style: GoogleFonts.poppins(
+        fontSize: w * 0.038,
+        height: 1.4,
+        color: DefaultColors.black,
+      ),
+      children: _parseDescription(w),
+    ),
+  );
+
+  List<TextSpan> _parseDescription(double w) =>
+      widget.description.split(' ').map((word) {
+        final bold = RegExp(r'[\d,.]').hasMatch(word);
+        return TextSpan(
+          text: "$word ",
           style: GoogleFonts.poppins(
-            fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
+            fontSize: w * 0.038,
+            fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
             color: DefaultColors.black,
+          ),
+        );
+      }).toList();
+
+Widget _buildDontShowAgainSection(BuildContext context) {
+  final w = MediaQuery.of(context).size.width;
+  final h = MediaQuery.of(context).size.height;
+
+  return InkWell(
+    onTap: () {
+      setState(() => _dontShowAgain = !_dontShowAgain);
+      ref.read(offerVisibilityProvider.notifier).state = {
+        ...ref.read(offerVisibilityProvider),
+        widget.offerId: !_dontShowAgain,
+      };
+    },
+    child: Row(
+      children: [
+        SizedBox(
+          width: w * 0.06,
+          height: w * 0.06,
+          child: Checkbox(
+            value: _dontShowAgain,
+            onChanged: (val) {
+              setState(() => _dontShowAgain = val ?? false);
+              ref.read(offerVisibilityProvider.notifier).state = {
+                ...ref.read(offerVisibilityProvider),
+                widget.offerId: val ?? false,
+              };
+            },
+            activeColor: DefaultColors.blue9D,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: const VisualDensity(
+              horizontal: VisualDensity.minimumDensity,
+              vertical: VisualDensity.minimumDensity,
+            ),
+          ),
+        ),
+        SizedBox(width: w * 0.02),
+        Expanded(
+          child: Text(
+            "Don't Show this offer again!",
+            style: GoogleFonts.poppins(
+              fontSize: w * 0.028,
+              color: DefaultColors.gray82,
+              height: 1.0,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+  Widget _buildPrimaryButton(BuildContext context, double w, double h) =>
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: widget.onPrimaryButtonPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: DefaultColors.blue9D,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(w * 0.1),
+            ),
+            padding: EdgeInsets.symmetric(vertical: h * 0.015),
+          ),
+          child: Text(
+            widget.primaryButtonText,
+            style: GoogleFonts.poppins(
+              color: DefaultColors.white,
+              fontSize: w * 0.036,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       );
-    }
-    return spans;
-  }
 
-  List<Widget> _buildDontShowAgainSection(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: screenWidth * 0.05,
-            height: screenWidth * 0.05,
-            child: Checkbox(
-              value: _dontShowAgain,
-              onChanged: (value) {
-                setState(() {
-                  _dontShowAgain = value ?? false;
-                });
-                if (_dontShowAgain) {
-                  ref.read(offerVisibilityProvider.notifier).state = {
-                    ...ref.read(offerVisibilityProvider),
-                    widget.offerId: true,
-                  };
-                } else {
-                  ref.read(offerVisibilityProvider.notifier).state = {
-                    ...ref.read(offerVisibilityProvider),
-                    widget.offerId: false,
-                  };
-                }
-              },
-              activeColor: DefaultColors.blue9D,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          SizedBox(width: screenWidth * 0.02),
-          Flexible(
-            child: Text(
-              "Don't Show this offer again!",
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: DefaultColors.gray71,
-              ),
-            ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 20),
-    ];
-  }
+  Widget _buildCloseButton(BuildContext context, double w, double h) {
+    return GestureDetector(
+      onTap: () {
+        if (_isCollapsing) return;
+        setState(() => _isCollapsing = true);
+        _controller.forward();
 
-  Widget _buildPrimaryButton(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: widget.onPrimaryButtonPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: DefaultColors.blue9D,
-          foregroundColor: DefaultColors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          elevation: 0,
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) Navigator.pop(context);
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: w * 0.07,
+          vertical: h * 0.012,
+        ),
+        decoration: BoxDecoration(
+          color: DefaultColors.blueFA,
+          borderRadius: BorderRadius.circular(w * 0.1),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              widget.primaryButtonText,
+              widget.secondaryButtonText,
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: w * 0.036,
                 fontWeight: FontWeight.w600,
+                color: DefaultColors.black,
               ),
             ),
-            SizedBox(width: screenWidth * 0.02),
-            Icon(Icons.north_east, size: 18),
+            SizedBox(width: w * 0.015),
+            Icon(Icons.close, size: w * 0.045, color: DefaultColors.black),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSecondaryButton(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: widget.onSecondaryButtonPressed,
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          side: BorderSide(color: DefaultColors.blue9D, width: 1.5),
-        ),
-        child: Text(
-          widget.secondaryButtonText,
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: DefaultColors.blue9D,
-          ),
         ),
       ),
     );
