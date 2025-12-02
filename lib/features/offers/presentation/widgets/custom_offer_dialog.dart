@@ -49,20 +49,20 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 900),
     );
 
-    _scaleAnim = Tween<double>(
-      begin: 1,
+    _scaleAnim = Tween(
+      begin: 1.0,
       end: 0.03,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _fadeAnim = Tween<double>(
-      begin: 1,
+    _fadeAnim = Tween(
+      begin: 1.0,
       end: 0.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _moveAnim = Tween<Offset>(
+    _moveAnim = Tween(
       begin: Offset.zero,
       end: const Offset(0, 1.1),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
@@ -76,11 +76,12 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
-    final h = MediaQuery.of(context).size.height;
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
+    final h = size.height;
 
     return Dialog(
-      backgroundColor: DefaultColors.transparent,
+      backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: w * 0.045),
       child: ClipRect(
         child: Stack(
@@ -110,13 +111,12 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
 
   Widget _mainCard(BuildContext context, double w, double h) {
     return Container(
-      width: double.infinity,
       decoration: BoxDecoration(
         color: DefaultColors.white,
         borderRadius: BorderRadius.circular(w * 0.07),
         boxShadow: [
           BoxShadow(
-            color: DefaultColors.black.withOpacity(0.10),
+            color: Colors.black.withOpacity(0.12),
             blurRadius: w * 0.05,
             offset: Offset(0, h * 0.01),
           ),
@@ -128,8 +128,7 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildBlueContent(context, w, h),
-            SizedBox(height: h * 0.015),
-            SizedBox(height: h * 0.03),
+            SizedBox(height: h * 0.02),
           ],
         ),
       ),
@@ -144,8 +143,8 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
       ),
       child: Column(
         children: [
-          _buildImageStack(context, w, h),
-          SizedBox(height: h * 0.04),
+          _buildImageStack(context),
+          SizedBox(height: h * 0.03),
           Padding(
             padding: EdgeInsets.fromLTRB(
               w * 0.06,
@@ -154,14 +153,15 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
               h * 0.02,
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTitle(context, w),
-                SizedBox(height: h * 0.02),
-                _buildDescription(context, w),
+                SizedBox(height: h * 0.015),
+                _buildDescription(context),
                 SizedBox(height: h * 0.02),
                 if (widget.showDontShowAgain)
                   _buildDontShowAgainSection(context),
-                SizedBox(height: h * 0.015),
+                SizedBox(height: h * 0.02),
                 _buildPrimaryButton(context, w, h),
               ],
             ),
@@ -171,24 +171,26 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
     );
   }
 
-  Widget _buildImageStack(BuildContext context, double w, double h) {
-    final cardW = w * 0.35;
-    final cardH = w * 0.22;
-    final hide = cardH * 0.20;
+  Widget _buildImageStack(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+
+    final cardW = w * 0.34;
+    final cardH = w * 0.21;
+    final visibleHeight = cardH * 0.78;
 
     return ClipRect(
       child: SizedBox(
-        width: cardW + w * 0.04,
-        height: cardH - hide + h * 0.01,
+        width: cardW + w * 0.03,
+        height: visibleHeight,
         child: Stack(
           children: [
             Positioned(
-              top: -hide,
+              top: -(cardH * 0.22),
               right: 0,
               child: _img("assets/images/credit.png", cardW, cardH),
             ),
             Positioned(
-              top: -hide + h * 0.01,
+              top: -(cardH * 0.18),
               left: 0,
               child: _img(widget.imagePath, cardW, cardH),
             ),
@@ -199,64 +201,71 @@ class _CustomOfferDialogState extends ConsumerState<CustomOfferDialog>
   }
 
   Widget _img(String p, double w, double h) => ClipRRect(
-    borderRadius: BorderRadius.circular(w * 0.07),
+    borderRadius: BorderRadius.circular(w * 0.08),
     child: Image.asset(p, width: w, height: h, fit: BoxFit.cover),
   );
 
-  Widget _buildTitle(BuildContext context, double w) => Align(
-    alignment: Alignment.centerLeft,
-    child: Text(
-      widget.title,
-      style: GoogleFonts.poppins(
-        fontSize: w * 0.04,
-        fontWeight: FontWeight.w700,
-        color: DefaultColors.blue9D,
-      ),
+  Widget _buildTitle(BuildContext context, double w) => Text(
+    widget.title,
+    style: GoogleFonts.poppins(
+      fontSize: w * 0.046,
+      fontWeight: FontWeight.w700,
+      color: DefaultColors.blue9D,
     ),
   );
 
-  Widget _buildDescription(BuildContext context, double w) => RichText(
-    text: TextSpan(
-      style: GoogleFonts.poppins(
-        fontSize: w * 0.038,
-        height: 1.4,
-        color: DefaultColors.black,
+  /// ⭐ Number bolding is restored here
+  Widget _buildDescription(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        style: GoogleFonts.poppins(
+          fontSize: 15,
+          height: 1.4,
+          color: Colors.black87,
+        ),
+        children: _parseDescription(),
       ),
-      children: _parseDescription(w),
-    ),
-  );
+    );
+  }
 
-  List<TextSpan> _parseDescription(double w) =>
-      widget.description.split(' ').map((word) {
-        final bold = RegExp(r'[\d,.]').hasMatch(word);
-        return TextSpan(
+  List<TextSpan> _parseDescription() {
+    final words = widget.description.split(' ');
+    List<TextSpan> spans = [];
+    for (int i = 0; i < words.length; i++) {
+      String word = words[i];
+      bool isBold =
+          RegExp(r'[\d,.]').hasMatch(word) ||
+          word.toLowerCase().contains('maximum') ||
+          word.toLowerCase().contains('limit') ||
+          word.toLowerCase().contains('upto') ||
+          word.toUpperCase() == 'QAR';
+      spans.add(
+        TextSpan(
           text: "$word ",
           style: GoogleFonts.poppins(
-            fontSize: w * 0.038,
-            fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
-            color: DefaultColors.black,
+            fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
+            color: Colors.black87,
           ),
-        );
-      }).toList();
+        ),
+      );
+    }
+    return spans;
+  }
 
-Widget _buildDontShowAgainSection(BuildContext context) {
-  final w = MediaQuery.of(context).size.width;
-  final h = MediaQuery.of(context).size.height;
+  Widget _buildDontShowAgainSection(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
 
-  return InkWell(
-    onTap: () {
-      setState(() => _dontShowAgain = !_dontShowAgain);
-      ref.read(offerVisibilityProvider.notifier).state = {
-        ...ref.read(offerVisibilityProvider),
-        widget.offerId: !_dontShowAgain,
-      };
-    },
-    child: Row(
-      children: [
-        SizedBox(
-          width: w * 0.06,
-          height: w * 0.06,
-          child: Checkbox(
+    return InkWell(
+      onTap: () {
+        setState(() => _dontShowAgain = !_dontShowAgain);
+        ref.read(offerVisibilityProvider.notifier).state = {
+          ...ref.read(offerVisibilityProvider),
+          widget.offerId: !_dontShowAgain,
+        };
+      },
+      child: Row(
+        children: [
+          Checkbox(
             value: _dontShowAgain,
             onChanged: (val) {
               setState(() => _dontShowAgain = val ?? false);
@@ -266,28 +275,20 @@ Widget _buildDontShowAgainSection(BuildContext context) {
               };
             },
             activeColor: DefaultColors.blue9D,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            visualDensity: const VisualDensity(
-              horizontal: VisualDensity.minimumDensity,
-              vertical: VisualDensity.minimumDensity,
+          ),
+          Expanded(
+            child: Text(
+              "Don't Show this offer again!",
+              style: GoogleFonts.poppins(
+                fontSize: w * 0.028,
+                color: DefaultColors.gray82,
+              ),
             ),
           ),
-        ),
-        SizedBox(width: w * 0.02),
-        Expanded(
-          child: Text(
-            "Don't Show this offer again!",
-            style: GoogleFonts.poppins(
-              fontSize: w * 0.028,
-              color: DefaultColors.gray82,
-              height: 1.0,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _buildPrimaryButton(BuildContext context, double w, double h) =>
       SizedBox(
@@ -299,55 +300,54 @@ Widget _buildDontShowAgainSection(BuildContext context) {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(w * 0.1),
             ),
-            padding: EdgeInsets.symmetric(vertical: h * 0.015),
+            padding: EdgeInsets.symmetric(vertical: h * 0.014),
           ),
           child: Text(
             widget.primaryButtonText,
             style: GoogleFonts.poppins(
-              color: DefaultColors.white,
-              fontSize: w * 0.036,
+              color: Colors.white,
+              fontSize: w * 0.034,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
       );
 
-  Widget _buildCloseButton(BuildContext context, double w, double h) {
-    return GestureDetector(
-      onTap: () {
-        if (_isCollapsing) return;
-        setState(() => _isCollapsing = true);
-        _controller.forward();
+  Widget _buildCloseButton(BuildContext context, double w, double h) =>
+      GestureDetector(
+        onTap: () {
+          if (_isCollapsing) return;
+          setState(() => _isCollapsing = true);
+          _controller.forward();
 
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) Navigator.pop(context);
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: w * 0.07,
-          vertical: h * 0.012,
-        ),
-        decoration: BoxDecoration(
-          color: DefaultColors.blueFA,
-          borderRadius: BorderRadius.circular(w * 0.1),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              widget.secondaryButtonText,
-              style: GoogleFonts.poppins(
-                fontSize: w * 0.036,
-                fontWeight: FontWeight.w600,
-                color: DefaultColors.black,
+          Future.delayed(const Duration(milliseconds: 900), () {
+            if (mounted) Navigator.pop(context);
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: w * 0.07,
+            vertical: h * 0.011,
+          ),
+          decoration: BoxDecoration(
+            color: DefaultColors.blueFA,
+            borderRadius: BorderRadius.circular(w * 0.1),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.secondaryButtonText,
+                style: GoogleFonts.poppins(
+                  fontSize: w * 0.034,
+                  fontWeight: FontWeight.w600,
+                  color: DefaultColors.black,
+                ),
               ),
-            ),
-            SizedBox(width: w * 0.015),
-            Icon(Icons.close, size: w * 0.045, color: DefaultColors.black),
-          ],
+              SizedBox(width: w * 0.015),
+              Icon(Icons.close, size: w * 0.045, color: DefaultColors.black),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
